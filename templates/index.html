@@ -1,0 +1,311 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Fruit Store Management{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="jumbotron bg-primary text-white rounded p-5 mb-4" style="background: linear-gradient(135deg, #28a745, #20c997);">
+            <h1 class="display-4">Fruit Store Management</h1>
+            <p class="lead">Manage your fruit inventory, customers, suppliers, and orders all in one place.</p>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-3 mb-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body text-center">
+                <i class="fas fa-users fa-3x text-primary mb-3"></i>
+                <h5 class="card-title">Customers</h5>
+                <p class="card-text">Manage customer infoand membership status.</p>
+                <div class="d-grid gap-2">
+                    <a href="/customers" class="btn btn-primary">View Customers</a>
+                    <a href="/customers/create" class="btn btn-outline-primary">Add Customer</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body text-center">
+                <i class="fas fa-apple-alt fa-3x text-success mb-3"></i>
+                <h5 class="card-title">Fruits</h5>
+                <p class="card-text">Manage fruit inventory, prices, and stock levels.</p>
+                <div class="d-grid gap-2">
+                    <a href="/fruits" class="btn btn-primary">View Fruits</a>
+                    <a href="/fruits/create" class="btn btn-outline-primary">Add Fruit</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body text-center">
+                <i class="fas fa-truck fa-3x text-warning mb-3"></i>
+                <h5 class="card-title">Suppliers</h5>
+                <p class="card-text">Manage supplier information and fruit supply lists.</p>
+                <div class="d-grid gap-2">
+                    <a href="/suppliers" class="btn btn-primary">View Suppliers</a>
+                    <a href="/suppliers/create" class="btn btn-outline-primary">Add Supplier</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body text-center">
+                <i class="fas fa-shopping-cart fa-3x text-info mb-3"></i>
+                <h5 class="card-title">Orders</h5>
+                <p class="card-text">Track and manage customer orders and deliveries.</p>
+                <div class="d-grid gap-2">
+                    <a href="/orders" class="btn btn-primary">View Orders</a>
+                    <a href="/orders/create" class="btn btn-outline-primary">Create Order</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="fas fa-chart-bar"></i> Quick Stats</h5>
+                <button id="refresh-stats" class="btn btn-sm btn-outline-light" title="Refresh Stats">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+            </div>
+            <div class="card-body">
+                <div id="stats-loading" class="text-center py-3" style="display: none;">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2">Loading statistics...</p>
+                </div>
+                <div id="stats-error" class="alert alert-danger" style="display: none;">
+                    <i class="fas fa-exclamation-triangle"></i> Failed to load statistics. Please try again.
+                </div>
+                <div id="stats-content">
+                    <div class="row text-center">
+                        <div class="col-md-3">
+                            <div class="border-end">
+                                <h3 class="text-primary" id="customers-count">
+                                    <div class="spinner-border spinner-border-sm" role="status"></div>
+                                </h3>
+                                <p class="mb-0">Total Customers</p>
+                                <small class="text-muted">(<span id="members-count">-</span> members)</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="border-end">
+                                <h3 class="text-success" id="fruits-count">
+                                    <div class="spinner-border spinner-border-sm" role="status"></div>
+                                </h3>
+                                <p class="mb-0">Fruit Types</p>
+                                <small class="text-muted">(<span id="organic-fruits">-</span> organic)</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="border-end">
+                                <h3 class="text-warning" id="suppliers-count">
+                                    <div class="spinner-border spinner-border-sm" role="status"></div>
+                                </h3>
+                                <p class="mb-0">Active Suppliers</p>
+                                <small class="text-muted">(<span id="total-suppliers">-</span> total)</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <h3 class="text-info" id="orders-count">
+                                <div class="spinner-border spinner-border-sm" role="status"></div>
+                            </h3>
+                            <p class="mb-0">Total Orders</p>
+                            <small class="text-muted">(<span id="pending-orders">-</span> pending)</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-info-circle"></i> System Features</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success"></i> Complete CRUD operations for all entities</li>
+                            <li><i class="fas fa-check text-success"></i> Customer membership management</li>
+                            <li><i class="fas fa-check text-success"></i> Real-time inventory tracking</li>
+                            <li><i class="fas fa-check text-success"></i> Supplier relationship management</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success"></i> Order status tracking</li>
+                            <li><i class="fas fa-check text-success"></i> Organic fruit categorization</li>
+                            <li><i class="fas fa-check text-success"></i> Multi-country fruit sourcing</li>
+                            <li><i class="fas fa-check text-success"></i> Responsive web interface</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.stats-card {
+    transition: transform 0.2s ease-in-out;
+}
+
+.stats-card:hover {
+    transform: translateY(-2px);
+}
+
+.spinner-border-sm {
+    width: 1rem;
+    height: 1rem;
+}
+
+#refresh-stats:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+</style>
+
+<script>
+// Load and display real stats from the API
+async function loadStats() {
+    const statsElements = {
+        customersCount: document.getElementById('customers-count'),
+        fruitsCount: document.getElementById('fruits-count'),
+        suppliersCount: document.getElementById('suppliers-count'),
+        ordersCount: document.getElementById('orders-count'),
+        membersCount: document.getElementById('members-count'),
+        organicFruits: document.getElementById('organic-fruits'),
+        totalSuppliers: document.getElementById('total-suppliers'),
+        pendingOrders: document.getElementById('pending-orders')
+    };
+
+    const loadingDiv = document.getElementById('stats-loading');
+    const errorDiv = document.getElementById('stats-error');
+    const contentDiv = document.getElementById('stats-content');
+
+    try {
+        // Show loading state
+        loadingDiv.style.display = 'block';
+        errorDiv.style.display = 'none';
+        
+        // Fetch stats from API
+        const response = await fetch('/api/stats');
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const result = await response.json();
+        
+        if (!result.success) {
+            throw new Error(result.error || 'Failed to load statistics');
+        }
+        
+        const data = result.data;
+        
+        // Hide loading and show content
+        loadingDiv.style.display = 'none';
+        contentDiv.classList.add('fade-in');
+        
+        // Update main stats with animation
+        statsElements.customersCount.innerHTML = data.customers_count;
+        statsElements.fruitsCount.innerHTML = data.fruits_count;
+        statsElements.suppliersCount.innerHTML = data.suppliers_count;
+        statsElements.ordersCount.innerHTML = data.orders_count;
+        
+        // Update secondary stats
+        statsElements.membersCount.textContent = data.members_count;
+        statsElements.organicFruits.textContent = data.organic_fruits;
+        statsElements.totalSuppliers.textContent = data.total_suppliers;
+        statsElements.pendingOrders.textContent = data.pending_orders;
+        
+        // Add success animation
+        Object.values(statsElements).forEach(element => {
+            if (element.tagName === 'H3') {
+                element.style.animation = 'none';
+                element.offsetHeight; // Trigger reflow
+                element.style.animation = 'fadeIn 0.5s ease-in';
+            }
+        });
+        
+    } catch (error) {
+        console.error('Error loading stats:', error);
+        
+        // Hide loading and show error
+        loadingDiv.style.display = 'none';
+        errorDiv.style.display = 'block';
+        
+        // Show fallback values
+        Object.values(statsElements).forEach(element => {
+            if (element.tagName === 'H3') {
+                element.innerHTML = '<i class="fas fa-exclamation-triangle text-danger"></i>';
+            } else {
+                element.textContent = 'Error';
+            }
+        });
+    }
+}
+
+// Refresh stats function
+function refreshStats() {
+    const refreshBtn = document.getElementById('refresh-stats');
+    const originalIcon = refreshBtn.innerHTML;
+    
+    // Show spinning icon
+    refreshBtn.innerHTML = '<i class="fas fa-sync-alt fa-spin"></i>';
+    refreshBtn.disabled = true;
+    
+    loadStats().finally(() => {
+        // Restore button
+        setTimeout(() => {
+            refreshBtn.innerHTML = originalIcon;
+            refreshBtn.disabled = false;
+        }, 1000); // Keep spinning for at least 1 second for visual feedback
+    });
+}
+
+// Event listeners
+document.addEventListener('DOMContentLoaded', function() {
+    // Load stats on page load
+    loadStats();
+    
+    // Add refresh button click handler
+    document.getElementById('refresh-stats').addEventListener('click', refreshStats);
+    
+    // Auto-refresh stats every 30 seconds (optional)
+    setInterval(loadStats, 30000);
+});
+
+// Handle refresh on visibility change (when user comes back to tab)
+document.addEventListener('visibilitychange', function() {
+    if (!document.hidden) {
+        loadStats();
+    }
+});
+</script>
+{% endblock %}

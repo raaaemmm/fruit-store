@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}Add Fruit - Fruit Store Management{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-plus"></i> Add New Fruit</h5>
+            </div>
+            <div class="card-body">
+                <form method="post" action="/fruits/create">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="barCode" class="form-label">Barcode *</label>
+                            <input type="text" class="form-control" id="barCode" name="barCode" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="name" class="form-label">Fruit Name *</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="category" class="form-label">Category *</label>
+                            <select class="form-control" id="category" name="category" required>
+                                <option value="">Select Category</option>
+                                <option value="Tropical">Tropical</option>
+                                <option value="Temperate">Temperate</option>
+                                <option value="Citrus">Citrus</option>
+                                <option value="Berry">Berry</option>
+                                <option value="Melon">Melon</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="pricePerKg" class="form-label">Price per Kg ($) *</label>
+                            <input type="number" step="0.01" class="form-control" id="pricePerKg" name="pricePerKg" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="stockKg" class="form-label">Stock (Kg) *</label>
+                            <input type="number" class="form-control" id="stockKg" name="stockKg" required>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="country" class="form-label">Country of Origin *</label>
+                            <input type="text" class="form-control" id="country" name="country" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="supplierId" class="form-label">Supplier *</label>
+                            <select class="form-control" id="supplierId" name="supplierId" required>
+                                <option value="">Select Supplier</option>
+                                {% for supplier in suppliers %}
+                                <option value="{{ supplier._id }}">{{ supplier.name }} ({{ supplier.location }})</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="isOrganic" name="isOrganic" value="true">
+                            <label class="form-check-label" for="isOrganic">
+                                <i class="fas fa-leaf text-success"></i> Organic Fruit
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <a href="/fruits" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Back to List
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Save Fruit
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

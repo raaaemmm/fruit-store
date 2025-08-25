@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}Fruits - Fruit Store Management{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-apple-alt"></i> Fruits</h2>
+    <a href="/fruits/create" class="btn btn-primary">
+        <i class="fas fa-plus"></i> Add New Fruit
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">Fruit Inventory</h5>
+    </div>
+    <div class="card-body">
+        {% if fruits %}
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Barcode</th>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Price/Kg</th>
+                        <th>Stock</th>
+                        <th>Country</th>
+                        <th>Supplier</th>
+                        <th>Organic</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for fruit in fruits %}
+                    <tr>
+                        <td><code>{{ fruit.barCode }}</code></td>
+                        <td><strong>{{ fruit.name }}</strong></td>
+                        <td><span class="badge bg-info">{{ fruit.category }}</span></td>
+                        <td>${{ "%.2f"|format(fruit.pricePerKg) }}</td>
+                        <td>
+                            <span class="badge {% if fruit.stockKg < 50 %}bg-warning{% else %}bg-success{% endif %}">
+                                {{ fruit.stockKg }} kg
+                            </span>
+                        </td>
+                        <td>{{ fruit.country }}</td>
+                        <td>{{ fruit.supplierName|default('Unknown') }}</td>
+                        <td>
+                            {% if fruit.isOrganic %}
+                                <span class="badge bg-success"><i class="fas fa-leaf"></i> Organic</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Regular</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="/fruits/{{ fruit._id }}/edit" class="btn btn-sm btn-outline-primary me-1">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                            <form method="post" action="/fruits/{{ fruit._id }}/delete" class="d-inline" onsubmit="return confirmDelete(event)">
+                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-4">
+            <i class="fas fa-apple-alt fa-3x text-muted mb-3"></i>
+            <h5>No fruits found</h5>
+            <p class="text-muted">Start building your inventory by adding fruits.</p>
+            <a href="/fruits/create" class="btn btn-primary">Add Fruit</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
