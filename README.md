@@ -23,8 +23,8 @@ A comprehensive web-based management system for fruit stores built with FastAPI,
 
 - **Backend**: FastAPI (Python 3.8+)
 - **Database**: MongoDB with Motor (async driver)
-- **Frontend**: HTML5, Bootstrap 5.1.3, Jinja2 templates
-- **Icons**: Font Awesome 6.0.0
+- **Frontend**: HTML5, Bootstrap 5, Jinja2 templates
+- **Icons**: Font Awesome
 - **Server**: Uvicorn ASGI server
 - **Environment**: Python-dotenv for configuration
 
@@ -40,7 +40,7 @@ Before running this application, ensure you have:
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/raaaemmm/fruit-store.git
+git clone https://github.com/your-username/fruit-store.git
 cd fruit-store
 ```
 
@@ -62,34 +62,7 @@ pip install -r requirements.txt
 ```
 
 ### 4. Environment Configuration
-```bash
-# Copy environment template
-cp .env.example .env
-
-# Edit .env file with your configuration
-nano .env  # or use your preferred editor
-```
-
-### 5. Configure MongoDB
-Make sure MongoDB is running and update your `.env` file with the correct MongoDB connection string.
-
-### 6. Run the Application
-```bash
-# Development mode
-python main.py
-
-# Or using uvicorn directly
-uvicorn main:app --host 0.0.0.0 --port 8000 --reload
-```
-
-### 7. Access the Application
-Open your browser and navigate to: `http://localhost:8000`
-
-## ⚙️ Configuration
-
-### Environment Variables
-
-The application uses environment variables for configuration. Copy `.env.example` to `.env` and configure:
+Create a `.env` file in the root directory:
 
 ```env
 # MongoDB Configuration
@@ -106,34 +79,54 @@ APP_TITLE=Fruit Store Management
 APP_VERSION=1.0.0
 DEBUG=true
 
-# Security (for future authentication features)
-SECRET_KEY=your-super-secret-key-change-in-production
-ALGORITHM=HS256
-
-# Logging
-LOG_LEVEL=INFO
-
 # Template and Static Directories
 TEMPLATE_DIR=templates
 STATIC_DIR=static
 ```
 
-### MongoDB Setup
+### 5. Configure MongoDB
+Make sure MongoDB is running and accessible at the URL specified in your `.env` file.
 
-#### Local MongoDB
+### 6. Run the Application
 ```bash
-# Install MongoDB (Ubuntu/Debian)
-sudo apt-get install mongodb
+# Development mode
+python main.py
 
-# Start MongoDB service
-sudo systemctl start mongodb
+# Or using uvicorn directly
+uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
-#### MongoDB Atlas (Cloud)
-1. Create account at [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
-2. Create a new cluster
-3. Get connection string
-4. Update `MONGODB_URL` in `.env`
+### 7. Access the Application
+Open your browser and navigate to: `http://localhost:8000`
+
+## ⚙️ Project Structure
+
+```
+fruit-store/
+├── main.py                     # Main application entry point
+├── requirements.txt            # Python dependencies
+├── .env                       # Environment variables (create from template)
+├── README.md                  # Project documentation
+├── database/
+│   └── connection.py          # Database connection configuration
+├── models/                    # Pydantic models
+│   ├── customer.py           # Customer data models
+│   ├── fruit.py              # Fruit data models
+│   ├── order.py              # Order data models
+│   └── supplier.py           # Supplier data models
+├── routes/                    # Route handlers
+│   ├── api_routes.py         # REST API endpoints
+│   └── web_routes.py         # Web interface routes
+├── utils/
+│   └── helpers.py            # Utility functions
+└── templates/                # HTML templates (Jinja2)
+    ├── base.html             # Base template
+    ├── index.html            # Dashboard
+    ├── customers/            # Customer templates
+    ├── fruits/               # Fruit templates
+    ├── suppliers/            # Supplier templates
+    └── orders/               # Order templates
+```
 
 ## 📖 API Documentation
 
@@ -146,17 +139,25 @@ Once the application is running, you can access:
 
 ### Key API Endpoints
 
+#### Web Routes
 | Endpoint | Method | Description |
 |----------|--------|-------------|
 | `/` | GET | Dashboard homepage |
 | `/customers` | GET | List all customers |
 | `/customers/create` | GET/POST | Create customer form/action |
 | `/fruits` | GET | List all fruits |
-| `/fruits/create` | GET/POST | Create fruit form/action |
 | `/suppliers` | GET | List all suppliers |
 | `/orders` | GET | List all orders |
+
+#### API Routes
+| Endpoint | Method | Description |
+|----------|--------|-------------|
 | `/api/stats` | GET | Get dashboard statistics |
-| `/health` | GET | Application health check |
+| `/api/customers` | GET/POST | List/Create customers |
+| `/api/customers/{id}` | GET/PUT/DELETE | Customer operations |
+| `/api/fruits` | GET/POST | List/Create fruits |
+| `/api/suppliers` | GET/POST | List/Create suppliers |
+| `/api/orders` | GET/POST | List/Create orders |
 
 ## 🗄️ Database Schema
 
@@ -213,7 +214,8 @@ Once the application is running, you can access:
     "quantityKg": Number
   }],
   "totalAmount": Number,
-  "status": String
+  "status": String,
+  "updated_at": DateTime
 }
 ```
 
@@ -223,37 +225,20 @@ The application features a modern, responsive design with:
 
 - **Navigation Bar**: Easy access to all sections
 - **Dashboard**: Real-time statistics and quick actions
-- **Data Tables**: Sortable and searchable data display
+- **Data Tables**: Clean display of all entities
 - **Forms**: Intuitive forms with validation
 - **Status Indicators**: Color-coded status badges
 - **Responsive Design**: Works on desktop, tablet, and mobile
 
-## 🔧 Development
-
-### Project Structure
-```
-fruit-store/
-├── main.py                 # Main application file
-├── requirements.txt        # Python dependencies
-├── .env.example           # Environment variables template
-├── .gitignore            # Git ignore rules
-├── README.md             # Project documentation
-└── templates/            # HTML templates
-    ├── base.html         # Base template
-    ├── index.html        # Dashboard
-    ├── customers/        # Customer templates
-    ├── fruits/           # Fruit templates
-    ├── suppliers/        # Supplier templates
-    └── orders/           # Order templates
-```
+## 🧪 Development
 
 ### Adding New Features
 
-1. **Create new routes** in `main.py`
-2. **Add HTML templates** in appropriate folders
-3. **Update navigation** in `base.html`
-4. **Add database models** as needed
-5. **Update API documentation**
+1. **Create new models** in the `models/` directory
+2. **Add routes** in `routes/api_routes.py` or `routes/web_routes.py`
+3. **Create templates** in the appropriate `templates/` subdirectory
+4. **Update navigation** in `templates/base.html`
+5. **Test your changes**
 
 ### Code Style
 
@@ -265,9 +250,14 @@ fruit-store/
 
 ## 🚀 Deployment
 
-### Production Deployment
+### Production Environment Variables
+```env
+DEBUG=false
+APP_RELOAD=false
+MONGODB_URL=mongodb://your-production-mongodb-url
+```
 
-#### Using Docker (Recommended)
+### Using Docker
 ```dockerfile
 FROM python:3.9-slim
 
@@ -276,40 +266,15 @@ COPY requirements.txt .
 RUN pip install -r requirements.txt
 
 COPY . .
+EXPOSE 8000
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
 ```
 
-#### Using Gunicorn
+### Using Gunicorn
 ```bash
 pip install gunicorn
-gunicorn main:app -w 4 -k uvicorn.workers.UvicornWorker
+gunicorn main:app -w 4 -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000
 ```
-
-#### Environment Variables for Production
-```env
-DEBUG=false
-APP_RELOAD=false
-MONGODB_URL=mongodb://your-production-mongodb-url
-SECRET_KEY=your-production-secret-key
-```
-
-## 🧪 Testing
-
-### Running Tests
-```bash
-# Install test dependencies
-pip install pytest pytest-asyncio httpx
-
-# Run tests
-pytest
-```
-
-### Test Coverage
-Tests should cover:
-- API endpoints
-- Database operations
-- Form validation
-- Error handling
 
 ## 🤝 Contributing
 
@@ -319,48 +284,25 @@ Tests should cover:
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-### Contribution Guidelines
-
-- Write clear, descriptive commit messages
-- Add tests for new features
-- Update documentation as needed
-- Follow the existing code style
-- Test your changes thoroughly
-
 ## 📝 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License.
 
 ## 📞 Support
 
-If you encounter any issues or have questions:
+If you encounter any issues:
 
-1. Check the [GitHub Issues](https://github.com/raaaemmm/fruit-store/issues)
-2. Create a new issue with detailed description
-3. Provide error logs and environment details
+1. Check the application logs
+2. Verify MongoDB connection
+3. Ensure all environment variables are set correctly
+4. Create an issue with detailed error information
 
 ## 🙏 Acknowledgments
 
 - Built with [FastAPI](https://fastapi.tiangolo.com/)
 - Styled with [Bootstrap](https://getbootstrap.com/)
-- Icons by [Font Awesome](https://fontawesome.com/)
 - Database powered by [MongoDB](https://www.mongodb.com/)
 
 ---
 
-## 📈 Roadmap
-
-Future enhancements planned:
-
-- [ ] User authentication and authorization
-- [ ] Advanced reporting and analytics
-- [ ] Email notifications for orders
-- [ ] Barcode scanning functionality
-- [ ] Multi-store support
-- [ ] Mobile application
-- [ ] Export/import functionality
-- [ ] Advanced inventory management
-
----
-
-**Made with ❤️ by [raaaemmm with Claude AI](https://github.com/raaaemmm)**
+**Happy fruit store management! 🍓🥝🍊**
